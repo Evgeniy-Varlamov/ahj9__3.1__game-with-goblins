@@ -9,6 +9,7 @@ export default class GamePlay {
     this.lastPosition = 0;
     this.gameBoard.drawBoard();
     this.gameStarted = false;
+    this.click = true;
   }
 
   init() {
@@ -22,6 +23,7 @@ export default class GamePlay {
           this.missedLimit -= 1;
         }
         if (this.missedLimit < 1) this.stop();
+        this.click = true;
       });
     }
   }
@@ -34,10 +36,20 @@ export default class GamePlay {
   }
 
   start() {
+    this.click = true;
     this.interval = setInterval(() => {
       this.getPosition();
       this.gameBoard.fields.item(this.lastPosition).innerHTML = '';
+      if (!this.click) {
+        this.missedLimit -= 1;
+        if (this.missedLimit < 1) {
+          this.stop();
+          return undefined;
+        }
+      }
       this.gameBoard.fields.item(this.position).innerHTML = '<img class="goblin" src="goblin.png">';
+      this.click = false;
+      return undefined;
     }, 1000);
     this.gameStarted = true;
   }
